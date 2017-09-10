@@ -7,12 +7,12 @@ import datetime
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('username', 'email','password')
+		fields = ('username','email','password')
 
 class PerfilSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Perfil
-		fields = ('url','username','resumo', 'born','cidade','pais', 'foto_perfil', 'obras')
+		fields = ('url', 'id','username','resumo', 'born','cidade','pais', 'foto_perfil', 'obras', 'seguindo', 'seguidores','mensagens_recebidas', 'postagens')
 
 class PerfilCreateSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):

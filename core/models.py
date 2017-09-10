@@ -3,12 +3,13 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 class Perfil(models.Model):
-	usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+	usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='perfil')
 	resumo = models.TextField()
 	born = models.DateField(null=True, blank=True)
 	cidade = models.CharField(max_length=128, default='Não Informado')
 	pais = models.CharField(max_length=128, default='Não Informado')
 	foto_perfil = models.ImageField(upload_to = 'foto_perfil/', default = 'foto_perfil/None/no-img.jpg', blank=True, null=True)
+	seguindo = models.ManyToManyField("self", blank=True, null=True, related_name='seguidores',symmetrical=False)
 
 	@property
 	def username(self):
