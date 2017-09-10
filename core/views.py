@@ -14,6 +14,9 @@ from django.contrib.auth import get_user_model
 from core.permissions import *
 
 class PerfilList(generics.ListAPIView):
+	'''
+    Retorna a lista de todos os perfils ativos
+    '''
 	queryset = Perfil.objects.all()
 	serializer_class = PerfilSerializer
 	name ='perfil-list'	

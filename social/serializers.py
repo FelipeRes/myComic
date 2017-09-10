@@ -17,7 +17,7 @@ class ComentarioDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 class PostagemSerializer(serializers.ModelSerializer):
 	def create(self, validate_data):
-		postagem = Postagem.objects.create(**validate_data, publicacao=timezone.localdate())
+		postagem = Postagem.objects.create(**validate_data, publicacao=timezone.now())
 		return postagem
 	imagem = serializers.ImageField(max_length=None,allow_empty_file=True,required=False)
 	class Meta:

@@ -18,8 +18,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.views.static import serve
 from django.conf.urls.static import static
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
+    url(r'^$', schema_view),
     url(r'^admin/', admin.site.urls),
     url(r'^core/', include('core.urls')),
     url(r'^social/', include('social.urls')),

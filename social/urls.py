@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^mensagem/(?P<pk>[0-9]+)/$', views.MensagemDetail.as_view(), name=views.MensagemDetail.name),
     url(r'^seguir/$', views.SeguirView.as_view(), name=views.SeguirView.name),
     url(r'^deixar_seguir/$', views.DeixarSeguirView.as_view(), name=views.DeixarSeguirView.name),
+    url(r'^timeline/$', views.TimeLine.as_view(), name=views.TimeLine.name),
 ]

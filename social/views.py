@@ -97,7 +97,7 @@ class DeixarSeguirView(APIView):
 			}
 			return Response(content, status=status.HTTP_404_NOT_FOUND)
 		perfil = Perfil.objects.get(id=request.data['perfil_id'])
-		
+
 		if request.user.perfil in perfil.seguidores.all():
 			perfil.seguidores.remove(request.user.perfil)
 			content = {
@@ -109,3 +109,15 @@ class DeixarSeguirView(APIView):
 				"mensagem": "perfil "+ request.user.username + " nunca seguiu " + perfil.username
 			}
 			return Response(content, status=status.HTTP_202_ACCEPTED)
+
+class TimeLine(APIView):
+	permission_classes = (IsAuthenticated,)
+	name='time-line'
+	def get(self, request):
+		timeLine = []
+		perfils = []
+		for p in request.user.perfil.seguindo.all():
+			perfils.append(p)
+		for postagem in Postagem.objects.filter(perfil__in=perfils).values().order_by('-publicacao'):
+			timeLine.append(postagem)
+		return Response(timeLine, status=status.HTTP_202_ACCEPTED)

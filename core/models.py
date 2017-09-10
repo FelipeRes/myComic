@@ -33,7 +33,7 @@ class Obra(models.Model):
 	perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='obras')
 	nome = models.CharField(max_length=128)
 	sinopse = models.TextField()
-	publicacao = models.DateField()
+	publicacao = models.DateTimeField()
 	status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=PUBLICACAO)
 	visualizacao = models.IntegerField()
 	gostei = models.IntegerField()
@@ -46,7 +46,7 @@ class Capitulo(models.Model):
 	obra = models.ForeignKey(Obra, on_delete=models.CASCADE, related_name='capitulos')
 	nome = models.CharField(max_length=128)
 	numero = models.PositiveIntegerField()
-	publicacao = models.DateField()
+	publicacao = models.DateTimeField()
 	capa = models.ImageField(upload_to = 'capitulo_capa/', default = 'capitulo_capa/None/no-img.jpg')
 	
 	def __str__(self):
