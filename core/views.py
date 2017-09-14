@@ -42,6 +42,8 @@ class ObraList(generics.ListCreateAPIView):
 	serializer_class = ObraSerializer
 	name = 'obra-list'
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsObraOrReadOnly)
+	def perform_create(self, serializers):
+		serializers.save(perfil=self.request.user.perfil)
 
 class ObraDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Obra.objects.all()
@@ -56,11 +58,28 @@ class ObraDetail(generics.RetrieveUpdateDestroyAPIView):
 		obra.save()
 		return super(ObraDetail, self).get_object()
 
-class CapituloList(generics.CreateAPIView):
-	queryset = Capitulo.objects.all()
-	serializer_class = CapituloSerializer
+class CapituloList(generics.ListAPIView):
+	serializer_class = CapituloDetailSerializer
 	name = 'capitulo-list'
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCapituloReadOnly)
+	def get_queryset(self):
+		obra = Obra.objects.get(pk=self.kwargs['pk'])
+		return Capitulo.objects.filter(obra=obra)
+
+class CapituloCreate(generics.ListCreateAPIView):
+	serializer_class = CapituloSerializer
+	name = 'capitulo-create'
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCapituloReadOnly)
+	def get_queryset(self):
+		obra = Obra.objects.get(pk=self.kwargs['pk'])
+		return Capitulo.objects.filter(obra=obra)
+	def perform_create(self, serializers):
+		obra = Obra.objects.get(pk=self.kwargs['pk'])
+		if obra in self.request.user.perfil.obras.all():
+			print('tudo certinho')
+			serializers.save(obra=obra)
+		else:
+			return Response({'msg':'não pode porra'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class CapituloDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Capitulo.objects.all()

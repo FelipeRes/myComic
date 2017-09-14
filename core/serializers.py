@@ -39,7 +39,7 @@ class ObraSerializer(serializers.ModelSerializer):
 	capa = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Obra
-		fields = ('url','perfil','nome','sinopse','capa',)
+		fields = ('url','nome','sinopse','capa',)
 
 class ObraDetailSerializer(serializers.HyperlinkedModelSerializer):
 	capa = serializers.ImageField(max_length=None)
@@ -50,8 +50,9 @@ class ObraDetailSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Obra
 		fields = ('url','perfil','nome','sinopse','publicacao','status','visualizacao','gostei','capa','capitulos')
+		read_only_fields = ('perfil',)
 
-class CapituloSerializer(serializers.ModelSerializer):
+class CapituloSerializer(serializers.HyperlinkedModelSerializer):
 	def create(self, validated_data):
 		obra = validated_data['obra']
 		capitulo = Capitulo.objects.create(**validated_data, numero=obra.capitulos.count(), publicacao=timezone.localdate())
@@ -59,7 +60,7 @@ class CapituloSerializer(serializers.ModelSerializer):
 	capa = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Capitulo
-		fields = ('obra','nome','capa',)
+		fields = ('url','nome','capa',)
 
 class PaginaSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
@@ -75,5 +76,6 @@ class CapituloDetailSerializer(serializers.HyperlinkedModelSerializer):
 	paginas = PaginaSerializer(many=True)
 	class Meta:
 		model = Capitulo
-		fields = ('url','obra','nome','numero','publicacao','capa','paginas')
+		fields = ('url','nome','numero','publicacao','capa','paginas')
+		read_only_fields = ('obra',)
 	
