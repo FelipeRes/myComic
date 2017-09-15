@@ -62,18 +62,21 @@ class CapituloSerializer(serializers.HyperlinkedModelSerializer):
 		model = Capitulo
 		fields = ('url','nome','capa',)
 
-class PaginaSerializer(serializers.ModelSerializer):
-	def create(self, validated_data):
-		pagina = Pagina.objects.create(**validated_data, numero = validated_data['capitulo'].paginas.count() + 1)
-		return pagina
+class PaginaDetailSerializer(serializers.ModelSerializer):
 	imagem = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Pagina
 		fields = ('url','capitulo','imagem',)
 
+class PaginaSerializer(serializers.ModelSerializer):
+	imagem = serializers.ImageField(max_length=None)
+	class Meta:
+		model = Pagina
+		fields = ('url','imagem',)
+
 class CapituloDetailSerializer(serializers.HyperlinkedModelSerializer):
 	capa = serializers.ImageField(max_length=None)
-	paginas = PaginaSerializer(many=True)
+	paginas = PaginaDetailSerializer(many=True)
 	class Meta:
 		model = Capitulo
 		fields = ('url','nome','numero','publicacao','capa','paginas')

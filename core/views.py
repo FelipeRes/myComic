@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -75,11 +76,11 @@ class CapituloCreate(generics.ListCreateAPIView):
 		return Capitulo.objects.filter(obra=obra)
 	def perform_create(self, serializers):
 		obra = Obra.objects.get(pk=self.kwargs['pk'])
-		if obra in self.request.user.perfil.obras.all():
-			print('tudo certinho')
+		obras = self.request.user.perfil.obras.all()
+		if obra in obras:
 			serializers.save(obra=obra)
 		else:
-			return Response({'msg':'não pode porra'}, status=status.HTTP_401_UNAUTHORIZED)
+			raise ValidationError('You have not have permission')
 
 class CapituloDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Capitulo.objects.all()
@@ -87,7 +88,22 @@ class CapituloDetail(generics.RetrieveUpdateDestroyAPIView):
 	name = 'capitulo-detail'
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCapituloReadOnly)
 
-class PaginaDetail(generics.CreateAPIView):
+class PaginaDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Pagina.objects.all()
+	serializer_class = PaginaDetailSerializer
+	name = 'pagina-detail'
+
+class PaginaCreate(generics.CreateAPIView):
 	queryset = Pagina.objects.all()
 	serializer_class = PaginaSerializer
-	name = 'pagina-detail'
+	name = 'pagina-create'
+	def perform_create(self, serializers):
+		capitulo = Capitulo.objects.get(pk=self.kwargs['cap_pk'])
+		print(1)
+		if capitulo.obra.perfil == self.request.user.perfil:
+			print(2)
+			numero = capitulo.paginas.count() + 1
+			serializers.save(capitulo=capitulo, numero = numero)
+		else:
+			raise ValidationError('You have not have permission')
+
