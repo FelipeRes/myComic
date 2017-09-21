@@ -1,4 +1,4 @@
-"""myComic URL Configuration
+"""my_comic_cliente URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -13,20 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 from django.conf import settings
-from django.views.static import serve
-from django.conf.urls.static import static
-from rest_framework_swagger.views import get_swagger_view
-
-schema_view = get_swagger_view(title='Pastebin API')
+from django.contrib import admin
+from core import views
 
 urlpatterns = [
-    url(r'^$', schema_view),
     url(r'^admin/', admin.site.urls),
-    url(r'^core/', include('core.urls')),
-    url(r'^social/', include('social.urls')),
-    #url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^index/', views.index, name='index'),
+    url(r'^obra/(?P<pk>[0-9]+)/$', views.obra, name='obra'),
+    url(r'^leitura/(?P<pk>[0-9]+)/$', views.leitura, name='leitura'),
+    url(r'^minhas_obras/(?P<pk>[0-9]+)/$', views.minhas_obras, name='minhas_obras'),
+    url(r'^login/$', views.login, name='login')
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

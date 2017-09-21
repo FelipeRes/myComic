@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block additional %}
+	<div class="fixed-action-btn" >
+		<div v-if="logged">
+			<a data-target="novaObra" class="btn-floating btn-large purple modal-trigger">
+				<i class="large material-icons">add</i>
+			</a>
+		</div>
+	</div>
+	<div id="novaObra" class="modal col s12 m4 ">
+	    <div class="modal-content">
+	      	<h4>Crie uma nova obra</h4>
+	      	<div class="row">
+	      		<form action="https://localhost:8000/core/obra/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
+	      		{% csrf_token %}
+		        <div class="input-field col s12">
+		          	<input 
+		          		placeholder="Qual é o nome da sua nova obra?" 
+		          		type="text" 
+		          		class="validate" 
+		          		v-model="novaObra.nome">
+		          	<label for="username">Nome</label>
+		        </div>
+		        <div class="input-field col s12">
+		          	<input 
+		          		placeholder="Do que se trata essa história?" 
+		          		type="password" 
+		          		class="validate" 
+		          		v-model="novaObra.sinopse">
+		          	<label for="password">Sinopse</label>
+		        </div>
+		        <div class="file-field input-field col s12 m12" >
+			      	<div class="btn">
+			       		<span>Capa</span>
+			        	<input type="file" @change="processFile($event)">
+			      	</div>
+			      	<div class="file-path-wrapper">
+			        	<input class="file-path validate" type="text" >
+			      	</div>
+			    </div>
+			    <input type="submit" name="criar">
+			    </form>
+		    </div>
+	    </div>
+	    <div class="modal-footer">
+	      	<a class="modal-action modal-close waves-effect waves-green btn-flat" @click.prevent="criarNovaObra(novaObra)">Criar</a>
+	    </div>
+	</div>
+{% endblock %}
+{% block content %}
+	<div class="container" style="margin: 0 auto; margin-top: 1em;">
+			{% for obra in results %}
+		<div class="row">
+	        <div class="col s12 m3">
+	        	<a href="/obra/{{obra.id}}">
+	            <img src="{{obra.capa}}" style="max-width: 200px;">
+	            </a>
+	        </div>
+	        <div class="col s12 m3">
+	            <h4>{{obra.nome}}</h4>
+	            <p>{{obra.sinopse}}</p>
+	            <i>visualizações: </i>{{obra.visualizacao}}<br>
+	            <i>publicação: </i>{{obra.publicacao}}<br>
+	            {% ifequal status 'P' %}
+	            	<i>status: </i> Em Pubilcação
+	            {% else %}
+	            	<i>status: </i> Finalizado
+	            {% endifequal %}
+	        </div>
+	    </div>
+	        {% endfor %}
+	</div>
+	<script type="text/javascript">
+
+	</script>
+{% endblock %}
