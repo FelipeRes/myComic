@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="row center">
+	{% if paginas %}
+		{% for pagina in paginas %}
+			<img src="{{pagina.imagem}}">
+		{% endfor %}
+	{% else %}
+		<i>Nenhuma página cadastrada</i>
+	{% endif %}
+	</div>
+{% endblock %}
