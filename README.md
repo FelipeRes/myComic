@@ -1,7 +1,7 @@
 # myComic
 Rede social para autores de quadrinhos independentes. O sistema se trata de uma API Rest desenvolvida com *django rest framework* onde o usuário pode tanto visualizar como criar obras de história em quadrinhos.
 O cliente da API se encontra na pasta *my_comic_cliente*
- ## Entidades e mapeamento objeto-relacional:
+ ## Entidades e diagrama entidade-relacionamento:
  O sistema apresenta 2 módulos: Criação(core) e social.
  ![alt text](https://github.com/FelipeRes/myComic/blob/master/docs/imagem.png)
  
