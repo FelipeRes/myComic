@@ -2,7 +2,9 @@
 Rede social para autores de quadrinhos independentes. O sistema se trata de uma API Rest desenvolvida com *django rest framework* onde o usuário pode tanto visualizar como criar obras de história em quadrinhos.
 O cliente da API se encontra na pasta *my_comic_cliente*
  ## Entidades e mapeamento objeto-relacional:
- O sistema apresenta 2 módulos: Criação(core) e social. 
+ O sistema apresenta 2 módulos: Criação(core) e social.
+ ![alt text](https://github.com/FelipeRes/myComic/blob/master/docs/imagem.png)
+ 
  ## Autenticação:
  
  A autenticação do sistema funciona por token, utilizando o *rest_framework.authtoken*. Qunado o usuario cria um perfil, um token é gerado automaticamente para ele no banco de dados.
@@ -59,4 +61,12 @@ urlpatterns = [
     url(r'^$', schema_view),
     ...
 ```
+![alt text](https://github.com/FelipeRes/myComic/blob/master/docs/documentacao.png)
  ## Throttling:
+O sistema não permite quantidades ilimitadas de requisição, para isso utiliza as classes *rest_framework.throttling.AnonRateThrottle* e *rest_framework.throttling.UserRateThrottle*. Ele limita o uso para usuarios anônimos em 1000 requisições por hora e 10000 requisições por hora para usuários não atenticados.
+ ```python
+ 'DEFAULT_THROTTLE_RATES':{
+        'anon':'1000/hour',
+        'user': '10000/hour',
+    },
+ ```
