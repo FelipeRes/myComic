@@ -11,6 +11,7 @@ O cliente da API se encontra na pasta *my_comic_cliente*
  O token é obtido através de um post para a url *core/get_auth_token/*. Esse post deve conter um JSON com "username" e "password".
  A aplicação cliente faz a requisição via *axios* e guarda o token na memoria do navegador:
  ```javascript
+ # no cliente /core/templates/base.html
  axios.post('http://localhost:8000/core/get_auth_token/', crendentials)
 	.then(function(response){
 		localStorage.setItem('token',response.data.token)
@@ -27,6 +28,7 @@ O cliente da API se encontra na pasta *my_comic_cliente*
  Os usuarios também só podem aleterar obras, capitulos, paginas e posts que eles mesmos tenham criado. Eles também só podem adicionar capítulos e páginas em obras da qual eles sejam proprietários.
  Exemplo:
   ```python
+  #no servidor /core/permissions.py
   class IsPaginaCreateOrReadOnly(permissions.BasePermission):
 	def has_object_permission(sefl, request, view, obj):
 		capitulo_id = request.resolver_match.kwargs.get('pk') 
@@ -39,6 +41,7 @@ O cliente da API se encontra na pasta *my_comic_cliente*
  Esta formaliza um permissão que restringe o usuario a adicionar páginas apenas para capitulos da qual ele seja proprietário.
  A única rota disponível para ciração de páginas exige o id do capítulo para qual a pagina se destina. Com esse id é possível resgatar o capitulo e checar se ele pertence ao usuario que está fazendo a requisição.
   ```python
+ #no servidor /core/urls.py
  url(r'^capitulo/(?P<pk>[0-9]+)/pagina/create$', views.PaginaCreate.as_view(), name=views.PaginaCreate.name),
  ```
  
@@ -52,6 +55,7 @@ O cliente da API se encontra na pasta *my_comic_cliente*
 ```
 A sua rota está localizada no endpoint do sistema.
  ```python
+#no servidor /core/urls.py
 from django.conf.urls import url, include
 from rest_framework_swagger.views import get_swagger_view
 
@@ -65,6 +69,7 @@ urlpatterns = [
  ## Throttling:
 O sistema não permite quantidades ilimitadas de requisição, para isso utiliza as classes *rest_framework.throttling.AnonRateThrottle* e *rest_framework.throttling.UserRateThrottle*. Ele limita o uso para usuarios anônimos em 1000 requisições por hora e 10000 requisições por hora para usuários não atenticados.
  ```python
+ #no servidor /MyComic/settings.py
  'DEFAULT_THROTTLE_RATES':{
         'anon':'1000/hour',
         'user': '10000/hour',
