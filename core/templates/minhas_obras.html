@@ -12,7 +12,6 @@
 	      	<h4>Crie uma nova obra</h4>
 	      	<div class="row">
 	      		<form action="/core/obra/" method="POST" enctype="multipart/form-data" class="form-horizontal" novalidate>
-	      		{% csrf_token %}
 		        <div class="input-field col s12">
 		          	<input 
 		          		placeholder="Qual é o nome da sua nova obra?" 
@@ -38,12 +37,11 @@
 			        	<input class="file-path validate" type="text" >
 			      	</div>
 			    </div>
-			    <input type="submit" name="criar">
 			    </form>
 		    </div>
 	    </div>
 	    <div class="modal-footer">
-	      	<!--<a class="modal-action modal-close waves-effect waves-green btn-flat" @click.prevent="criarNovaObra(novaObra)">Criar</a>-->
+	      	<a class="modal-action modal-close waves-effect waves-green btn-flat" @click.prevent="criarNovaObra(novaObra)">Criar</a>
 	    </div>
 	</div>
 {% endblock %}
@@ -70,15 +68,4 @@
 	    </div>
 	        {% endfor %}
 	</div>
-	<script src="/static/rest_framework/js/jquery-1.12.4.min.js"></script>
-      <script src="/static/rest_framework/js/ajax-form.js"></script>
-      <script src="/static/rest_framework/js/csrf.js"></script>
-      <script src="/static/rest_framework/js/bootstrap.min.js"></script>
-      <script src="/static/rest_framework/js/prettify-min.js"></script>
-      <script src="/static/rest_framework/js/default.js"></script>
-	<script>
-        $(document).ready(function() {
-          $('form').ajaxForm();
-        });
-      </script>
 {% endblock %}

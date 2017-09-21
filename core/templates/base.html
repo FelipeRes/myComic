@@ -125,6 +125,7 @@
 			},
 			methods:{
 				login(crendentials){
+					console.log(crendentials)
 					axios.post('http://localhost:8000/core/get_auth_token/', crendentials)
 						.then(function(response){
 							localStorage.setItem('token',response.data.token)
