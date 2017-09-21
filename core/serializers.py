@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.models import *
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.utils import timezone
 import datetime
 
@@ -38,18 +39,7 @@ class ObraSerializer(serializers.ModelSerializer):
 	capa = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Obra
-		fields = ('url','nome','sinopse','capa',)
-
-class ObraDetailSerializer(serializers.HyperlinkedModelSerializer):
-	capa = serializers.ImageField(max_length=None)
-	publicacao = serializers.ReadOnlyField()
-	status = serializers.ReadOnlyField()
-	visualizacao = serializers.ReadOnlyField()
-	gostei = serializers.ReadOnlyField()
-	class Meta:
-		model = Obra
-		fields = ('url','perfil','nome','sinopse','publicacao','status','visualizacao','gostei','capa','capitulos')
-		read_only_fields = ('perfil',)
+		fields = ('id','nome','sinopse','capa',)
 
 class CapituloSerializer(serializers.HyperlinkedModelSerializer):
 	def create(self, validated_data):
@@ -69,16 +59,33 @@ class PaginaDetailSerializer(serializers.ModelSerializer):
 		read_only_fields = ('capitulo','criado_por',)
 
 class PaginaSerializer(serializers.ModelSerializer):
+	def create(self, validated_data):
+		print( validated_data['capitulo'].paginas.count())
+		numero = validated_data['capitulo'].paginas.count()
+		pagina = Pagina.objects.create(**validated_data, numero=numero+1)
+		pagina.save()
+		return pagina
 	imagem = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Pagina
-		fields = ('url','imagem','criado_por','capitulo',)
+		fields = ('url','imagem',)
 
 class CapituloDetailSerializer(serializers.HyperlinkedModelSerializer):
 	capa = serializers.ImageField(max_length=None)
 	paginas = PaginaDetailSerializer(many=True)
 	class Meta:
 		model = Capitulo
-		fields = ('url','nome','numero','publicacao','capa','paginas',)
+		fields = ('url', 'id', 'nome','numero','publicacao','capa','paginas',)
 		read_only_fields = ('obra',)
 	
+class ObraDetailSerializer(serializers.HyperlinkedModelSerializer):
+	capa = serializers.ImageField(max_length=None)
+	publicacao = serializers.ReadOnlyField()
+	status = serializers.ReadOnlyField()
+	visualizacao = serializers.ReadOnlyField()
+	gostei = serializers.ReadOnlyField()
+	capitulos = CapituloDetailSerializer(many=True, read_only=True)
+	class Meta:
+		model = Obra
+		fields = ('url','perfil','nome','sinopse','publicacao','status','visualizacao','gostei','capa','capitulos')
+		read_only_fields = ('perfil',)

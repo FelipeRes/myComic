@@ -7,6 +7,7 @@ class IsUserOrReadOnly(permissions.BasePermission):
 
 class IsObraOrReadOnly(permissions.BasePermission):
 	def has_object_permission(self, request, view, obj):
+		print('CHEGOU NA PERMISSÂO')
 		return ((request.method in permissions.SAFE_METHODS) or (obj.perfil.usuario == request.user))
 
 class IsCapituloReadOnly(permissions.BasePermission):

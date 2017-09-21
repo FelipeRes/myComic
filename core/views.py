@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.parsers import *
 from django.shortcuts import render, HttpResponse
 from rest_framework import generics
 from rest_framework import status
@@ -39,7 +39,8 @@ class ObraList(generics.ListCreateAPIView):
 	queryset = Obra.objects.all()
 	serializer_class = ObraSerializer
 	name = 'obra-list'
-	permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsObraOrReadOnly)
+	#permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsObraOrReadOnly)
+	parser_classes = (MultiPartParser,)
 	def perform_create(self, serializers):
 		serializers.save(perfil=self.request.user.perfil)
 
@@ -48,8 +49,8 @@ class MyObraList(generics.ListAPIView):
 	serializer_class = ObraSerializer
 	name = 'obra-list'
 	def get_queryset(self):
-		obra = Obra.objects.get(pk=self.kwargs['pk'])
-		return Capitulo.objects.filter(obra=obra)
+		perfil = Perfil.objects.get(pk=self.kwargs['pk'])
+		return Obra.objects.filter(perfil=perfil)
 
 class ObraDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Obra.objects.all()
@@ -82,7 +83,7 @@ class CapituloCreate(generics.ListCreateAPIView):
 	def perform_create(self, serializers):
 		obra = Obra.objects.get(pk=self.kwargs['pk'])
 		obras = self.request.user.perfil.obras.all()
-		serializers.save(obra=obra, criado_por=self.request.user)
+		serializers.save(obra=obra, criado_por=self.request.user.perfil)
 
 class CapituloDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Capitulo.objects.all()
@@ -102,5 +103,5 @@ class PaginaCreate(generics.CreateAPIView):
 	name = 'pagina-create'
 	def perform_create(self, serializers):
 		capitulo = Capitulo.objects.get(pk=self.kwargs['pk'])
-		serializers.save(criado_por=self.request.user, capitulo=capitulo)
+		serializers.save(criado_por=self.request.user.perfil, capitulo=capitulo)
 
