@@ -14,7 +14,19 @@ class IsCapituloReadOnly(permissions.BasePermission):
 		return ((request.method in permissions.SAFE_METHODS) or (obj.obra.perfil.usuario == request.user))
 
 class IsCapituloCreateOrReadOnly(permissions.BasePermission):
-	def has_object_permission(sefl, request, view, obj):
+	def has_permission(sefl, request, view, obj):
 		obra_id = request.resolver_match.kwargs.get('pk') 
 		obra = Obra.objects.get(pk=obra_id)
-		return False
+		if obra.perfil.user == request.user:
+			return True
+		else:
+			return False
+
+class IsPaginaCreateOrReadOnly(permissions.BasePermission):
+	def has_object_permission(sefl, request, view, obj):
+		capitulo_id = request.resolver_match.kwargs.get('pk') 
+		capitulo = Capitulo.objects.get(pk=capitulo_id)
+		if capitulo.criado_por.user == request.user:
+			return True
+		else:
+			return False

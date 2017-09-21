@@ -26,11 +26,10 @@ class PerfilCreateSerializer(serializers.ModelSerializer):
 		perfil.usuario = user
 		perfil.save()
 		return perfil
-	foto_perfil = serializers.ImageField(max_length=None, allow_empty_file=True)
 	usuario = UserSerializer()
 	class Meta:
 		model = Perfil
-		fields = ('usuario','resumo', 'born','cidade','pais', 'foto_perfil',)
+		fields = ('usuario','resumo', 'born','cidade','pais',)
 
 class ObraSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
@@ -67,18 +66,19 @@ class PaginaDetailSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Pagina
 		fields = ('url','capitulo','imagem',)
+		read_only_fields = ('capitulo','criado_por',)
 
 class PaginaSerializer(serializers.ModelSerializer):
 	imagem = serializers.ImageField(max_length=None)
 	class Meta:
 		model = Pagina
-		fields = ('url','imagem',)
+		fields = ('url','imagem','criado_por','capitulo',)
 
 class CapituloDetailSerializer(serializers.HyperlinkedModelSerializer):
 	capa = serializers.ImageField(max_length=None)
 	paginas = PaginaDetailSerializer(many=True)
 	class Meta:
 		model = Capitulo
-		fields = ('url','nome','numero','publicacao','capa','paginas')
+		fields = ('url','nome','numero','publicacao','capa','paginas',)
 		read_only_fields = ('obra',)
 	

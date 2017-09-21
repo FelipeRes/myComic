@@ -43,6 +43,14 @@ class ObraList(generics.ListCreateAPIView):
 	def perform_create(self, serializers):
 		serializers.save(perfil=self.request.user.perfil)
 
+class MyObraList(generics.ListAPIView):
+	queryset = Obra.objects.all()
+	serializer_class = ObraSerializer
+	name = 'obra-list'
+	def get_queryset(self):
+		obra = Obra.objects.get(pk=self.kwargs['pk'])
+		return Capitulo.objects.filter(obra=obra)
+
 class ObraDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Obra.objects.all()
 	serializer_class = ObraDetailSerializer
@@ -74,10 +82,7 @@ class CapituloCreate(generics.ListCreateAPIView):
 	def perform_create(self, serializers):
 		obra = Obra.objects.get(pk=self.kwargs['pk'])
 		obras = self.request.user.perfil.obras.all()
-		if obra in obras:
-			serializers.save(obra=obra)
-		else:
-			raise ValidationError('You have not have permission')
+		serializers.save(obra=obra, criado_por=self.request.user)
 
 class CapituloDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Capitulo.objects.all()
@@ -93,14 +98,9 @@ class PaginaDetail(generics.RetrieveUpdateDestroyAPIView):
 class PaginaCreate(generics.CreateAPIView):
 	queryset = Pagina.objects.all()
 	serializer_class = PaginaSerializer
+	permissions_classes = (permissions.IsAuthenticatedOrReadOnly, IsPaginaCreateOrReadOnly)
 	name = 'pagina-create'
 	def perform_create(self, serializers):
-		capitulo = Capitulo.objects.get(pk=self.kwargs['cap_pk'])
-		print(1)
-		if capitulo.obra.perfil == self.request.user.perfil:
-			print(2)
-			numero = capitulo.paginas.count() + 1
-			serializers.save(capitulo=capitulo, numero = numero)
-		else:
-			raise ValidationError('You have not have permission')
+		capitulo = Capitulo.objects.get(pk=self.kwargs['pk'])
+		serializers.save(criado_por=self.request.user, capitulo=capitulo)
 
