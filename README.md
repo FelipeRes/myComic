@@ -1,28 +1,28 @@
 # myComic
 Rede social para autores de quadrinhos independentes. O sistema se trata de uma API Rest desenvolvida com *django rest framework* onde o usuário pode tanto visualizar como criar obras de história em quadrinhos.
 O cliente da API se encontra na pasta *my_comic_cliente*
- ##Entidades e mapeamento objeto-relacional:
+ ## Entidades e mapeamento objeto-relacional:
  O sistema apresenta 2 módulos: Criação(core) e social. 
- ##Autenticação:
+ ## Autenticação:
  
  A autenticação do sistema funciona por token, utilizando o *rest_framework.authtoken*. Qunado o usuario cria um perfil, um token é gerado automaticamente para ele no banco de dados.
  O token é obtido através de um post para a url *core/get_auth_token/*. Esse post deve conter um JSON com "username" e "password".
  A aplicação cliente faz a requisição via *axios* e guarda o token na memoria do navegador:
  ```javascript
  axios.post('http://localhost:8000/core/get_auth_token/', crendentials)
-						.then(function(response){
-							localStorage.setItem('token',response.data.token)
-							menu.logged = true
-							Materialize.toast('Olá ' + login.crendentials.username, 3000, 'rounded')
-						})
-						.catch(e => {
-							console.log(e)
-						})
+	.then(function(response){
+		localStorage.setItem('token',response.data.token)
+		menu.logged = true
+		Materialize.toast('Olá ' + login.crendentials.username, 3000, 'rounded')
+	})
+		.catch(e => {
+		console.log(e)
+	})
  ```
  
- ##Permissão:
- Os usuarios tem permissão para visualizar todo tipo de coisa, mas só possuem permissão para criar objetos casos estenjam autenticados via toke.
- Os usuarios também só podem aleterar obras, capitulos, paginas e posts que eles mesmos tenham criado. Eles também só podem adicionar capitulos e páginas em obras da qual eles sejam proprietários.
+ ## Permissão:
+ Os usuarios tem permissão para visualizar todo tipo de coisa, mas só possuem permissão para criar objetos casos estenjam autenticados via token.
+ Os usuarios também só podem aleterar obras, capitulos, paginas e posts que eles mesmos tenham criado. Eles também só podem adicionar capítulos e páginas em obras da qual eles sejam proprietários.
  Exemplo:
   ```python
   class IsPaginaCreateOrReadOnly(permissions.BasePermission):
@@ -40,7 +40,7 @@ O cliente da API se encontra na pasta *my_comic_cliente*
  url(r'^capitulo/(?P<pk>[0-9]+)/pagina/create$', views.PaginaCreate.as_view(), name=views.PaginaCreate.name),
  ```
  
- ##[Swagger(https://github.com/marcgibbons/django-rest-swagger):
+ ## [Swagger](https://github.com/marcgibbons/django-rest-swagger):
  Swagger é uma framework que gera a documentação da API Rest do sistema.
  ```python
   INSTALLED_APPS = (
@@ -59,4 +59,4 @@ urlpatterns = [
     url(r'^$', schema_view),
     ...
 ```
- ##Throttling:
+ ## Throttling:
